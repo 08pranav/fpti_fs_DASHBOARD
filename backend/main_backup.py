@@ -395,7 +395,7 @@ async def upload_accounts_csv(file: UploadFile = File(...), db: Session = Depend
 if __name__ == "__main__":
     import uvicorn
     host = os.getenv("API_HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", os.getenv("API_PORT", "8000")))
+    port = int(os.getenv("API_PORT", "8000"))
     debug = os.getenv("DASH_DEBUG", "False").lower() == "true"
     
     uvicorn.run(app, host=host, port=port, reload=debug)

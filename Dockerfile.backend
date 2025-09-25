@@ -1,7 +1,5 @@
-# Dockerfile for the Financial Dashboard Application
 FROM python:3.11-slim
 
-# Set working directory
 WORKDIR /app
 
 # Install system dependencies
@@ -14,23 +12,23 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy only backend and data directories
+COPY backend/ ./backend/
+COPY data/ ./data/
 
 # Create necessary directories
-RUN mkdir -p /app/data /app/logs
+RUN mkdir -p /app/logs
 
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
 
 # Expose port (Railway uses PORT env var)
-EXPOSE $PORT
+EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
-# Use the Python main script that handles PORT env var
+# Run the backend
 CMD ["python", "backend/main.py"]
