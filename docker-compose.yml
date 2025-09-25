@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  financial-dashboard:
+    build: .
+    ports:
+      - "8000:8000"  # FastAPI backend
+      - "8050:8050"  # Dash frontend
+    environment:
+      - DATABASE_URL=sqlite:///./financial_dashboard.db
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - DASH_HOST=0.0.0.0
+      - DASH_PORT=8050
+      - DASH_DEBUG=false
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  # Optional: Add a reverse proxy (uncomment if needed)
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - financial-dashboard
+  #   restart: unless-stopped
